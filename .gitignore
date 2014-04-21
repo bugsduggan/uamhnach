@@ -1,0 +1,7 @@
+uamhnach.db
+config.py
+*.py[cod]
+
+pip-log.txt
+pip-delete-this-directory.txt
+*.log
