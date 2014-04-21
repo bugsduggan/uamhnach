@@ -62,8 +62,7 @@ class User(db.Model):
             'email': self.email,
         }
         if g.user and g.user.has_permission('group_read'):
-            data['groups'] = [{'id': gr.id, 'name': gr.name} \
-                              for gr in self.groups]
+            data['groups'] = [gr.to_json() for gr in self.groups]
         return data
 
 
@@ -88,8 +87,7 @@ class Group(db.Model):
             'name': self.name,
         }
         if g.user and g.user.has_permission('permission_read'):
-            data['permissions'] = [{'id': p.id, 'name': p.name} \
-                                   for p in self.permissions]
+            data['permissions'] = [p.to_json() for p in self.permissions]
         return data
 
 
