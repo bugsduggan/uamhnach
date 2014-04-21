@@ -24,6 +24,10 @@ if app.config['SQLALCHEMY_DATABASE_ENGINE'] == 'sqlite':
 from uamhnach import models
 
 
+import logging
+LOG = logging.getLogger('uamhnach')
+
+
 @app.before_request
 def before_request():
     # prune expired tokens
@@ -41,7 +45,17 @@ def before_request():
             user = auth_token.get_user()
     g.user = user
 
+def devel_logger(func):
+    def logForDev(*args, **kwargs):
+        LOG = logging.getLogger('uamhnach.dev')
+        devlog = {'function': func.__name__, 'args': args,
+                  'kwargs': kwargs}
+        LOG.log(5, "DEVEL: %(function)s called with %(args)s and "
+                "%(kwargs)s", devlog)
+        return func(*args, **kwargs)
+    return logForDev
 
+@devel_logger
 def permission_required(permission, or_self=False):
     def inner(func):
         def wrapper(*args, **kwargs):

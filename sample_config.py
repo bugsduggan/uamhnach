@@ -2,6 +2,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = False
+LOGLVL = 'INFO'
+LOGFILE = 'uamhnach.log'
 
 SQLALCHEMY_DATABASE_ENGINE = 'sqlite'
 SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_ENGINE + ':///' + os.path.join(basedir,
