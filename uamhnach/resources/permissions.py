@@ -2,16 +2,22 @@ from flask import request
 from flask.ext.restful import abort, Resource
 from sqlalchemy.exc import IntegrityError
 
-from uamhnach import api, db, models, permission_required
+from uamhnach import api, db, models, permission_required, devel_logger
+
+
+import logging
+LOG = logging.getLogger('uamhnach.resources.permissions')
 
 
 class Permissions(Resource):
 
     @permission_required('permission_read')
+    @devel_logger
     def get(self):
         return [p.to_json() for p in models.Permission.query.all()]
 
     @permission_required('permission_create')
+    @devel_logger
     def post(self):
         payload = request.get_json()
 
@@ -34,6 +40,7 @@ class Permissions(Resource):
 class Permission(Resource):
 
     @permission_required('permission_read')
+    @devel_logger
     def get(self, permission_id):
         permission = \
             models.Permission.query.filter_by(id=permission_id).first()
@@ -42,6 +49,7 @@ class Permission(Resource):
         return permission.to_json()
 
     @permission_required('permission_update')
+    @devel_logger
     def put(self, permission_id):
         permission = \
             models.Permission.query.filter_by(id=permission_id).first()
@@ -72,6 +80,7 @@ class Permission(Resource):
         return permission.to_json(), 200
 
     @permission_required('permission_delete')
+    @devel_logger
     def delete(self, permission_id):
         permission = \
             models.Permission.query.filter_by(id=permission_id).first()

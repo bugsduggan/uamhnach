@@ -2,8 +2,12 @@ from flask import g, request
 from flask.ext.restful import abort, Resource
 from sqlalchemy.exc import IntegrityError
 
-from uamhnach import api, db, permission_required
+from uamhnach import api, db, permission_required, devel_logger
 from uamhnach.models import User, Token
+
+
+import logging
+LOG = logging.getLogger('uamhnach.resources.tokens')
 
 
 class Tokens(Resource):
@@ -51,6 +55,7 @@ class Revoker(Resource):
         self._post(user_id=user_id, token=token)
 
     @permission_required('token_revoke', or_self=True)
+    @devel_logger
     def _post(self, user_id, token):
         token.expire()
         db.session.add(token)

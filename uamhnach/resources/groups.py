@@ -2,16 +2,22 @@ from flask import request
 from flask.ext.restful import abort, Resource
 from sqlalchemy.exc import IntegrityError
 
-from uamhnach import api, db, models, permission_required
+from uamhnach import api, db, models, permission_required, devel_logger
+
+
+import logging
+LOG = logging.getLogger('uamhnach.resources.groups')
 
 
 class Groups(Resource):
 
     @permission_required('group_read')
+    @devel_logger
     def get(self):
         return [g.to_json() for g in models.Group.query.all()]
 
     @permission_required('group_create')
+    @devel_logger
     def post(self):
         payload = request.get_json()
 
@@ -34,6 +40,7 @@ class Groups(Resource):
 class Group(Resource):
 
     @permission_required('group_read')
+    @devel_logger
     def get(self, group_id):
         group = models.Group.query.filter_by(id=group_id).first()
         if group is None:
@@ -41,6 +48,7 @@ class Group(Resource):
         return group.to_json()
 
     @permission_required('group_update')
+    @devel_logger
     def put(self, group_id):
         group = models.Group.query.filter_by(id=group_id).first()
         if group is None:
@@ -71,6 +79,7 @@ class Group(Resource):
 
 
     @permission_required('group_delete')
+    @devel_logger
     def delete(self, group_id):
         group = models.Group.query.filter_by(id=group_id).first()
         if group is None:

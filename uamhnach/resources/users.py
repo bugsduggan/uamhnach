@@ -2,16 +2,22 @@ from flask import request
 from flask.ext.restful import abort, Resource
 from sqlalchemy.exc import IntegrityError
 
-from uamhnach import api, db, models, permission_required
+from uamhnach import api, db, models, permission_required, devel_logger
+
+
+import logging
+LOG = logging.getLogger('uamhnach.resources.users')
 
 
 class Users(Resource):
 
     @permission_required('user_read')
+    @devel_logger
     def get(self):
         return [u.to_json() for u in models.User.query.all()]
 
     @permission_required('user_create')
+    @devel_logger
     def post(self):
         payload = request.get_json()
 
@@ -36,6 +42,7 @@ class Users(Resource):
 class User(Resource):
 
     @permission_required('user_read', or_self=True)
+    @devel_logger
     def get(self, user_id):
         user = models.User.query.filter_by(id=user_id).first()
         if user is None:
@@ -43,6 +50,7 @@ class User(Resource):
         return user.to_json()
 
     @permission_required('user_update', or_self=True)
+    @devel_logger
     def put(self, user_id):
         user = models.User.query.filter_by(id=user_id).first()
         if user is None:
@@ -70,6 +78,7 @@ class User(Resource):
         return user.to_json()
 
     @permission_required('user_delete')
+    @devel_logger
     def delete(self, user_id):
         user = models.User.query.filter_by(id=user_id).first()
         if user is None:
