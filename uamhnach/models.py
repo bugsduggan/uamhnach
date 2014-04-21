@@ -49,15 +49,20 @@ class User(db.Model):
         if not permission:
             return False
         for group in self.groups:
-            return permission in group.permissions
+            if permission in group.permissions:
+                return True
+        return False
 
     def to_json(self):
-        return {
+        data = {
             'id': self.id,
             'name': self.name,
             'email': self.email,
-            'groups': [g.name for g in self.groups],
         }
+        if g.user and g.user.has_permission('group_read'):
+            data['groups'] = [{'id': gr.id, 'name': gr.name} \
+                              for gr in self.groups]
+        return data
 
 
 class Group(db.Model):
@@ -76,11 +81,14 @@ class Group(db.Model):
         return '<Group %s>' % self.name
 
     def to_json(self):
-        return {
+        data = {
             'id': self.id,
             'name': self.name,
-            'permissions': [p.name for p in self.permissions],
         }
+        if g.user and g.user.has_permission('permission_read'):
+            data['permissions'] = [{'id': p.id, 'name': p.name} \
+                                   for p in self.permissions]
+        return data
 
 
 class Permission(db.Model):

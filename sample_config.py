@@ -1,6 +1,8 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+HOST = '127.0.0.1'
+PORT = 5001
 DEBUG = False
 
 SQLALCHEMY_DATABASE_ENGINE = 'sqlite'
