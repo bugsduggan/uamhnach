@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import hashlib
 import uuid
 
+from flask import g
+
 from uamhnach import app, db
 
 
